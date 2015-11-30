@@ -1,0 +1,26 @@
+{
+  "name": "bd-password-strength",
+  "main": "./dist/password-strength.js",
+  "version": "1.0.1",
+  "homepage": "https://github.com/buildium/password-strength",
+  "authors": [
+    "Ben Jacobs <ben.jacobs@buildium.com>"
+  ],
+  "description": "A utility for assigning a numeric score to a password entered by a user to judge its strength.",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "passwords"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

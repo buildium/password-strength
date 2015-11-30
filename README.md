@@ -6,15 +6,41 @@ strength. The algorithm is based upon [passwordmeter.com](http://www.passwordmet
 an idea of whether their password is difficult to guess, but it provides no guarantees about the security of the
 password.
 
+Installation
+------------
+
+**Via npm**
+
+```
+npm install bd-password-strength
+```
+
+**Via bower**
+
+```
+bower install bd-password-strength
+```
+
 Usage
 -----
 
 Include the code and call the summary method:
 
+**Via CommonJS style**
+
 ```
 var bdPasswordStrength = require('bd-password-strength');
 
 bdPasswordStrength.checkPassword('^CHkAV,4gy'); // 90
+```
+
+**Via global packages**
+```
+<script src="bd-password-strength/dist/password-strength.min.js"></script>
+
+<script>
+BdPasswordStrength.checkPassword('^CHkAV,4gy');
+</script>
 ```
 
 Testing

@@ -1,11 +1,12 @@
 {
   "name": "bd-password-strength",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A utility for assigning a numeric score to a password entered by a user to judge its strength.",
   "repository": "https://github.com/buildium/password-strength",
   "main": "password-strength.js",
   "scripts": {
-    "test": "karma start --single-run"
+    "test": "karma start --single-run",
+    "build": "browserify . --standalone BdPasswordStrength --outfile ./dist/password-strength.js && browserify . --transform [ uglifyify] --standalone BdPasswordStrength --outfile ./dist/password-strength.min.js "
   },
   "author": "Ben Jacobs <ben.jacobs@buildium.com>",
   "license": "MIT",
@@ -19,6 +20,7 @@
     "karma-jasmine": "^0.3.6",
     "karma-phantomjs-launcher": "^0.2.1",
     "phantomjs": "^1.9.19",
-    "phantomjs-polyfill": "0.0.1"
+    "phantomjs-polyfill": "0.0.1",
+    "uglifyify": "^3.0.1"
   }
 }
