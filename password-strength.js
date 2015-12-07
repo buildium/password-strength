@@ -1,3 +1,5 @@
+'use strict';
+
 var upperCaseTest = /[A-Z]/,
     lowerCaseTest = /[a-z]/,
     numberTest = /[0-9]/,
@@ -28,15 +30,15 @@ var upperCaseLetters,
 var safety = function safety(fn) {
     return function safeFn(input) {
         return typeof input === 'string' ? fn(input.split('')) : 0;
-    }
-}
+    };
+};
 
 var makeDeduction = function makeDeduction(fn) {
     return function negFn() {
         var args = Array.prototype.slice.call(arguments);
         return -(fn.apply(this, args));
-    }
-}
+    };
+};
 
 var numberOfCharacters = safety(function numChars(input) {
     return input.length * 4;
@@ -58,7 +60,7 @@ var flatTest = function flatTest(testRe, value) {
             return testRe.test(current) ? accumulator + value : accumulator;
         }, 0);
     });
-}
+};
 
 var middleNumbersAndSymbols = safety(function midNumsAndSymbs(input) {
     return input.slice(1, -1).reduce(function (accumulator, current) {
@@ -80,7 +82,7 @@ var sameType = function sameType(testRe) {
             return testRe.test(char);
         }) ? input.length : 0;
     }));
-}
+};
 
 var repeated = safety(function repChars(input) {
     var nRepChar = 0;
@@ -116,7 +118,7 @@ var consecutive = function consecutive(testRe) {
             }
         }, 0);
     });
-}
+};
 
 var sequential = function sequential(sequence) {
     return safety(function seq(input) {
@@ -127,7 +129,7 @@ var sequential = function sequential(sequence) {
                 score;
         }, 0);
     });
-}
+};
 
 var checkPassword = function checkPassword(input) {
     var score = [
@@ -147,12 +149,12 @@ var checkPassword = function checkPassword(input) {
         sequentialLetters,
         sequentialNumbers,
         sequentialSymbols
-    ].reduce(function (score, rule) {
-        return score + rule(input);
+    ].reduce(function (totalScore, rule) {
+        return totalScore + rule(input);
     }, 0);
 
     return score > 100 ? 100 : score;
-}
+};
 
 upperCaseLetters = characterTest(upperCaseTest);
 lowerCaseLetters = characterTest(lowerCaseTest);
