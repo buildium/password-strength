@@ -50,15 +50,17 @@ var characterTest = function characterTest(testRe) {
             return testRe.test(current) ? accumulator + 1 : accumulator;
         }, 0);
 
-        return (input.length - matches) * 2;
+        return matches > 0 ? (input.length - matches) * 2 : 0;
     });
 };
 
 var flatTest = function flatTest(testRe, value) {
     return safety(function testFlat(input) {
-        return input.reduce(function (accumulator, current) {
-            return testRe.test(current) ? accumulator + value : accumulator;
+        var matches = input.reduce(function (accumulator, current) {
+            return testRe.test(current) ? accumulator + 1 : accumulator;
         }, 0);
+
+        return (matches > 0 && matches < input.length) ? matches * value : 0;
     });
 };
 
@@ -69,11 +71,17 @@ var middleNumbersAndSymbols = safety(function midNumsAndSymbs(input) {
 });
 
 var requirements = safety(function req(input) {
+    var minRequirements = input.length >= 8 ? 3 : 4;
+
     var reqs = [upperCaseTest, lowerCaseTest, numberTest, symbolTest].reduce(function (accumulator, testRe) {
-        return testRe.test(input) ? accumulator + 2 : accumulator;
+        return testRe.test(input) ? accumulator + 1 : accumulator;
     }, 0);
 
-    return input.length >= 8 ? 2 + reqs : 0;
+    if (input.length >= 8) {
+        reqs += 1;
+    }
+
+    return reqs > minRequirements ? 2 * reqs : 0;
 });
 
 var sameType = function sameType(testRe) {

@@ -109,6 +109,10 @@ describe('PasswordStrength', () => {
             it('should deduct 2 points for every consecutive number', () => {
                 expect(PasswordStrength.consecutiveNumber('abcd12')).toBe(-2);
             });
+
+            it('should deduct 20 points', () => {
+                expect(PasswordStrength.consecutiveNumber('12345678910')).toEqual(-20);
+            });
         });
 
         describe('sequential letters (3+)', () => {
@@ -144,6 +148,10 @@ describe('PasswordStrength', () => {
 
         it('should check this other password', () => {
             expect(PasswordStrength.checkPassword('^CHkAV,4gy')).toEqual(90);
+        });
+
+        it('should check consecutive numbers', () => {
+            expect(PasswordStrength.checkPassword('12345678910')).toEqual(9);
         });
     });
 });
