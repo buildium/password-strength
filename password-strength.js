@@ -43,7 +43,7 @@ var makeDeduction = function makeDeduction(fn) {
 };
 
 var numberOfCharacters = safety(function numChars(input) {
-    return input.length * 4;
+    return input.length;
 });
 
 var characterTest = function characterTest(testRe) {
@@ -160,22 +160,22 @@ var config = function() {
 
 var checkPassword = function checkPassword(input) {
     var defaultConfig = [
-        numberOfCharacters,
-        middleNumbersAndSymbols,
-        requirements,
-        upperCaseLetters,
-        lowerCaseLetters,
-        numbers,
-        symbols,
-        lettersOnly,
-        numbersOnly,
-        repeatCharacters,
-        consecutiveUppercase,
-        consecutiveLowercase,
-        consecutiveNumber,
-        sequentialLetters,
-        sequentialNumbers,
-        sequentialSymbols
+        { fn: numberOfCharacters, weight: 4 },
+        { fn: middleNumbersAndSymbols, weight: 1 },
+        { fn: requirements, weight: 1 },
+        { fn: upperCaseLetters, weight: 1 },
+        { fn: lowerCaseLetters, weight: 1 },
+        { fn: numbers, weight: 1 },
+        { fn: symbols, weight: 1 },
+        { fn: lettersOnly, weight: 1 },
+        { fn: numbersOnly, weight: 1 },
+        { fn: repeatCharacters, weight: 1 },
+        { fn: consecutiveUppercase, weight: 1 },
+        { fn: consecutiveLowercase, weight: 1 },
+        { fn: consecutiveNumber, weight: 1 },
+        { fn: sequentialLetters, weight: 1 },
+        { fn: sequentialNumbers, weight: 1 },
+        { fn: sequentialSymbols, weight: 1 }
     ],
     configToUse = [];
 
@@ -186,7 +186,7 @@ var checkPassword = function checkPassword(input) {
     }
 
     var score = configToUse.reduce(function (totalScore, rule) {
-        return totalScore + rule(input);
+      return totalScore + (rule.fn(input) * rule.weight);
     }, 0);
 
     return score > 100 ? 100 : score;
