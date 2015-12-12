@@ -1,5 +1,7 @@
 'use strict';
 
+var module = {};
+
 var upperCaseTest = /[A-Z]/,
     lowerCaseTest = /[a-z]/,
     numberTest = /[0-9]/,
@@ -131,8 +133,33 @@ var sequential = function sequential(sequence) {
     });
 };
 
+var config = function() {
+  var scoreConfig = [];
+
+  config = function () {
+    return {
+      add: function add (fn, weight) {
+        scoreConfig.push({
+          fn: fn,
+          weight: weight
+        });
+
+        return config();
+      },
+      get: function () {
+        return scoreConfig;
+      },
+      checkPass: function (input) {
+        return checkPassword(input);
+      }
+    }
+  }
+
+  return config();
+}
+
 var checkPassword = function checkPassword(input) {
-    var score = [
+    var defaultConfig = [
         numberOfCharacters,
         middleNumbersAndSymbols,
         requirements,
@@ -149,7 +176,16 @@ var checkPassword = function checkPassword(input) {
         sequentialLetters,
         sequentialNumbers,
         sequentialSymbols
-    ].reduce(function (totalScore, rule) {
+    ],
+    configToUse = [];
+
+    if (config().get && config().get().length) {
+      configToUse = config().get();
+    } else {
+      configToUse = defaultConfig;
+    }
+
+    var score = configToUse.reduce(function (totalScore, rule) {
         return totalScore + rule(input);
     }, 0);
 
@@ -192,5 +228,8 @@ module.exports = {
     sequentialSymbols: sequentialSymbols,
 
     // wrapping it up
+    config: config,
     checkPassword: checkPassword
 };
+
+window.BdPasswordStrength = module.exports;
