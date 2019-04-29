@@ -5,145 +5,85 @@ import 'babel-polyfill';
 import { default as PasswordStrength } from './password-strength';
 
 describe('PasswordStrength', () => {
-    describe('additions', () => {
-        describe('number of characters', () => {
-            it('should assign a score of 0 for an undefined value', () => {
-                expect(PasswordStrength.numberOfCharacters()).toEqual(0);
-            });
-
-            it('should assign as score of n*4 for length', () => {
-                expect(PasswordStrength.numberOfCharacters('aa')).toEqual(8);
-            });
+    describe('base cases', () => {
+        it('should assign a score of 0 for undefined input', () => {
+            expect(PasswordStrength.calculatePasswordStrength(undefined, false)).toEqual(0);
         });
 
-        describe('uppercase letters', () => {
-            it('should assign a score of 0 if all the characters are uppercase letters', () => {
-                expect(PasswordStrength.upperCaseLetters('AA')).toEqual(0);
-            });
-
-            it('should assign a score of +((len-n)*2 for uppercase characters WHEN there is mixed case', () => {
-                expect(PasswordStrength.upperCaseLetters('Aa')).toBe(2);
-            });
-        });
-
-        describe('lowercase letters', () => {
-            it('should assign a score of 0 if all the characters are lowercase letters', () => {
-                expect(PasswordStrength.lowerCaseLetters('aa')).toEqual(0);
-            });
-
-            it('should assign a score of +((len-n)*2 for lowercase characters WHEN there is mixed case', () => {
-                expect(PasswordStrength.lowerCaseLetters('Aa')).toBe(2);
-            });
-        });
-
-        describe('numerical characters', () => {
-            it('should give 4 points per number', () => {
-                expect(PasswordStrength.numbers('B613')).toEqual(12);
-            });
-        });
-
-        describe('symbols', () => {
-            it('should give 6 points per symbol', () => {
-                expect(PasswordStrength.symbols('Ke$ha')).toEqual(6);
-            });
-        });
-
-        describe('middle numbers and symbols', () => {
-            it('should assign 0 points to an input with no middle symbols', () => {
-                expect(PasswordStrength.middleNumbersAndSymbols('a$')).toEqual(0);
-            });
-
-            it('should give 2 points for any number or symbol in the middle of the input', () => {
-                expect(PasswordStrength.middleNumbersAndSymbols('l33t')).toEqual(4);
-                expect(PasswordStrength.middleNumbersAndSymbols('fr0z*n')).toEqual(4);
-            });
-        });
-
-        describe('requirements', () => {
-            it('should award 8 points when the length requirement and 3 other requirements are met', () => {
-                expect(PasswordStrength.requirements('hunkymonkey1@')).toEqual(8);
-            });
-
-            it('should award 10 points when the length requirement and all other requirements are met', () => {
-                expect(PasswordStrength.requirements('Hunkymonkey1@')).toEqual(10);
-            });
+        it('should assign a score of 4 for a single character, even without a second parameter', () => {
+            expect(PasswordStrength.calculatePasswordStrength('a')).toEqual(4);
         });
     });
 
-    describe('deductions', () => {
-        describe('letters only', () => {
-            it('should subtract one pointer per letter if all the characters are letters', () => {
-                expect(PasswordStrength.lettersOnly('abEfg')).toEqual(-5);
-            });
+    describe('password length', () => {
+        it('should assign a score of 4 for a single character', () => {
+            expect(PasswordStrength.calculatePasswordStrength('a', false)).toEqual(4);
         });
 
-        describe('numbers only', () => {
-            it('should subtract one pointer per letter if all the characters are letters', () => {
-                expect(PasswordStrength.numbersOnly('12345')).toEqual(-5);
-            });
+        it('should assign a score of ' + (4 + 2 * 7) + ' for 8 characters because characters 2 through 8 are both 2 points each', () => {
+            expect(PasswordStrength.calculatePasswordStrength('abcdefgh', false)).toEqual(4 + 2 * 7);
         });
 
-        describe('repeat characters', () => {
-            it('should deduct for repeat characters based on proximity', () => {
-                expect(PasswordStrength.repeatCharacters('aa')).toEqual(-4);
-                expect(PasswordStrength.repeatCharacters('aaa')).toEqual(-14);
-                expect(PasswordStrength.repeatCharacters('abcdabcd')).toEqual(-6);
-                expect(PasswordStrength.repeatCharacters('aabbaa')).toEqual(-24);
-                expect(PasswordStrength.repeatCharacters('blob')).toEqual(-2);
-            });
+        it('should assign a score of ' + (4 + 2 * 7 + 1.5) + 'for 9 characeters because the 9th character is worth 1.5 points', () => {
+            expect(PasswordStrength.calculatePasswordStrength('abcdefghi', false)).toEqual(4 + 2 * 7 + 1.5);
         });
 
-        describe('consecutive upper case', () => {
-            it('should deduct 2 points for every consecutive upper case letter', () => {
-                expect(PasswordStrength.consecutiveUppercase('AAbCC')).toBe(-4);
-            });
+        it('should assign a score of ' + (4 + 2 * 7 + 1.5 * 12) + ' for 20 characters because characters 9 through 20 are both 1.5 points each', () => {
+            expect(PasswordStrength.calculatePasswordStrength('abcdefghijklmnopqrst', false)).toEqual(4 + 2 * 7 + 1.5 * 12);
         });
 
-        describe('consecutive lower case', () => {
-            it('should deduct 2 points for every consecutive lowercase letter', () => {
-                expect(PasswordStrength.consecutiveLowercase('blah')).toBe(-6);
-            });
-        });
-
-        describe('consecutive numbers', () => {
-            it('should deduct 2 points for every consecutive number', () => {
-                expect(PasswordStrength.consecutiveNumber('abcd12')).toBe(-2);
-            });
-        });
-
-        describe('sequential letters (3+)', () => {
-            it('should deduct 3 points for every sequence of letters of 3 or more characters', () => {
-                expect(PasswordStrength.sequentialLetters('abc')).toEqual(-3);
-
-                // jasmine complaining that -0 != 0. wat?
-                expect(Math.abs(PasswordStrength.sequentialLetters('ab12cd'))).toEqual(0);
-            });
-        });
-
-        describe('sequential numbers (3+)', () => {
-            it('should deduct 3 points for every sequence of numbers of 3 or more characters', () => {
-                expect(PasswordStrength.sequentialNumbers('123a45')).toEqual(-3);
-            });
-        });
-
-        describe('sequential symbols (3+)', () => {
-            it('should deduct 3 points for every sequence of symbols of 3 or more characters', () => {
-                expect(PasswordStrength.sequentialSymbols(')!@#$')).toEqual(-9);
-            });
+        it('should assign a score of ' + (4 + 2 * 7 + 1.5 * 12 + 6) + ' for 26 characters because characters beyond the 20th are worth 1 point each', () => {
+            expect(PasswordStrength.calculatePasswordStrength('abcdefghijklmnopqrstuvwxyz', false)).toEqual(4 + 2 * 7 + 1.5 * 12 + 6);
         });
     });
 
-    describe('the cumulative effect', () => {
-        it('should check the entire password', () => {
-            expect(PasswordStrength.checkPassword('my)Fp43.')).toEqual(88);
+    describe('non-lowercase characters', () => {
+        it('should assign a score of ' + (18 + 6) + ' because 8 characters has a base score of 18 and an upper case letter has a bonus of 6', () => {
+            expect(PasswordStrength.calculatePasswordStrength('Password', false)).toEqual(18 + 6);
         });
 
-        it('should check cap the output at 100', () => {
-            expect(PasswordStrength.checkPassword('j}FnoU8bseRL&X3CbFQWVKW')).toEqual(100);
+        it('should assign a score of ' + (18 + 6) + ' because 8 characters has a base score of 18 and a number has a bonus of 6', () => {
+            expect(PasswordStrength.calculatePasswordStrength('passw0rd', false)).toEqual(18 + 6);
         });
 
-        it('should check this other password', () => {
-            expect(PasswordStrength.checkPassword('^CHkAV,4gy')).toEqual(90);
+        it('should assign a score of ' + (18 + 6) + ' because 8 characters has a base score of 18 and a special character has a bonus of 6', () => {
+            expect(PasswordStrength.calculatePasswordStrength('p@ssword', false)).toEqual(18 + 6);
+        });
+
+        it('should assign a score of ' + (18 + 6) + ' because 8 characters has a base score of 18 and a space counts as a special character for a bonus of 6', () => {
+            expect(PasswordStrength.calculatePasswordStrength('pas word', false)).toEqual(18 + 6);
+        });
+
+        it('should assign a score of ' + (18 + 6) + ' because 8 characters has a base score of 18 and letters with diacritic marks count as special characters for a bonus of 6', () => {
+            expect(PasswordStrength.calculatePasswordStrength('pássword', false)).toEqual(18 + 6);
+        });
+
+        it('should assign a score of ' + (18 + 6) + ' because multiple non-lowercase letters do not increase the score', () => {
+            expect(PasswordStrength.calculatePasswordStrength('P@ssw0rd', false)).toEqual(18 + 6);
+        });
+    });
+
+    describe('weak password checks', () => {
+        it('should assign a score of ' + (18 + 6) + ' because 8 characters has a base score of 18 and the weak password check is worth 6', () => {
+            expect(PasswordStrength.calculatePasswordStrength('password', true)).toEqual(18 + 6);
+        });
+
+        it('should assign a score of ' + (19.5 + 6) + ' because 9 characters has a base score of 19.5 and the weak password check does not increase with the 9th character', () => {
+            expect(PasswordStrength.calculatePasswordStrength('passwords', true)).toEqual(19.5 + 6);
+        });
+
+        it('should assign a score of ' + (21 + 5) + ' because 10 characters has a base score of 21 and the weak password check decreases by one for the 10th character', () => {
+            expect(PasswordStrength.calculatePasswordStrength('passwordss', true)).toEqual(21 + 5);
+        });
+
+        it('should assign a score of 36 because 20 characters has a base score of 36 and the weak password check decreases to zero when we reach 20 characters', () => {
+            expect(PasswordStrength.calculatePasswordStrength('abcdefghijklmnopqrst', true)).toEqual(36);
+        });
+    });
+
+    describe('password check in readme', () => {
+        it ('should assign a score of 27 because 10 characters is worth 21 points and there is a 6 point bonus for the non-lowercase characters', () => {
+            expect(PasswordStrength.calculatePasswordStrength('^CHkAV,4gy', false)).toEqual(27);
         });
     });
 });
