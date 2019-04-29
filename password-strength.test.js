@@ -80,4 +80,10 @@ describe('PasswordStrength', () => {
             expect(PasswordStrength.calculatePasswordStrength('abcdefghijklmnopqrst', true)).toEqual(36);
         });
     });
+
+    describe('password check in readme', () => {
+        it ('should assign a score of 27 because 10 characters is worth 21 points and there is a 6 point bonus for the non-lowercase characters', () => {
+            expect(PasswordStrength.calculatePasswordStrength('^CHkAV,4gy', false)).toEqual(27);
+        });
+    });
 });
