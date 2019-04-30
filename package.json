@@ -1,6 +1,6 @@
 {
   "name": "bd-password-strength",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "A utility for assigning a numeric score to a password entered by a user to judge its strength.",
   "repository": "https://github.com/buildium/password-strength",
   "main": "password-strength.js",
