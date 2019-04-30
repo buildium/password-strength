@@ -9,7 +9,7 @@
     "build": "browserify . --standalone BdPasswordStrength --outfile ./dist/password-strength.js && browserify . --transform [ uglifyify] --standalone BdPasswordStrength --outfile ./dist/password-strength.min.js",
     "lint": "node ./node_modules/eslint/bin/eslint.js ./password-strength.js"
   },
-  "author": "Ben Jacobs <ben.jacobs@buildium.com>",
+  "author": "Bernard Chen <bernard@buildium.com>",
   "license": "MIT",
   "devDependencies": {
     "babel-polyfill": "^6.2.0",
