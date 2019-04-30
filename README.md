@@ -27,12 +27,6 @@ Installation
 npm install bd-password-strength
 ```
 
-**Via bower**
-
-```
-bower install bd-password-strength
-```
-
 Usage
 -----
 
